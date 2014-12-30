@@ -2,20 +2,21 @@ from optparse import OptionParser
 import ACT_2014_2015_config
 import csv
 
-def run(options):
+
+def run(run_options):
     """
     Runs script
     :return:
     """
-    # Parse args
-    input_file_path = options['input_file_path']
-    output_file_path = options['output_file_path']
+    # Get args
+    input_file_path = run_options['input_file_path']
+    output_file_path = run_options['output_file_path']
 
     # Load layout config
     file_layout = ACT_2014_2015_config.layout
 
     # Open source ACT file, load into memory
-    with open(input_file_path, ) as input_file:
+    with open(input_file_path) as input_file:
         input_file_data = input_file.readlines()
 
     # Convert lines
@@ -23,8 +24,8 @@ def run(options):
     for input_record in input_file_data:
 
         converted_record = []
-
         for field in file_layout:
+            # Have to add +1 for way string splicing works compared to how config end_positions are saved
             converted_record.append(input_record[field['start_position']:field['end_position']+1])
 
         converted_records.append(converted_record)
@@ -35,18 +36,6 @@ def run(options):
         header_row = [y['field'] for y in file_layout]
         write_file.writerow(header_row)
         write_file.writerows(converted_records)
-
-def convert_line(fixed_width_text, splits):
-    """
-    :param line: non-delimited text
-    :param splits: list of dicts {field, start_position, end_position}
-    :return: comma delimited text
-    """
-
-    delimited_text = ""
-
-    for split in splits:
-        pass
 
 if __name__ == '__main__':
 
